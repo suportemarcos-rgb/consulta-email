@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Consulte seu E-mail de aluno</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg, #f5f8fc 0%, #eef3f9 100%);
+  font-family: Arial, sans-serif;
+  color: #1f2a44;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 40px auto 50px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    margin-top: 20px;
+  }
+}
+
+.caixa,
+.card {
+  background: rgba(255,255,255,0.96);
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 18px 45px rgba(15, 35, 75, 0.12);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.caixa {
+  text-align: center;
+  align-self: start;
+}
+
+.icone-email {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #eef6ff;
+  color: #1a73e8;
+  font-size: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+
+h2 {
+  margin: 0 0 8px;
+  color: #0b5ed7;
+  font-size: 25px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+
+.subtitulo {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 26px;
+}
+
+.campo-busca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0 15px;
+  transition: 0.2s;
+}
+
+.campo-busca:focus-within {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 4px rgba(26,115,232,0.13);
+}
+
+.campo-busca span {
+  font-size: 20px;
+  color: #64748b;
+}
+
+.campo-busca input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 16px 0;
+  font-size: 15px;
+  background: transparent;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0b5ed7, #1a73e8);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(26,115,232,0.28);
+}
+
+button:disabled {
+  background: #a6c8ff;
+  cursor: not-allowed;
+}
+
+.loading {
+  display: none;
+  margin-top: 18px;
+  color: #64748b;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #1a73e8;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#retorno:empty {
+  display: none;
+}
+
+.badge {
+  display: inline-block;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 16px;
+  border-radius: 999px;
+}
+
+.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.erro {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.resultado {
+  background: #f8fafc;
+  padding: 18px;
+  margin-top: 16px;
+  text-align: left;
+  font-size: 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.logo-instituicao {
+  text-align: center;
+  background: #fff;
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.logo-instituicao img {
+  max-width: 240px;
+  max-height: 90px;
+  object-fit: contain;
+}
+
+.linha {
+  margin-bottom: 8px;
+  color: #334155;
+}
+
+.copiar {
+  background: #eef6ff;
+  color: #0b5ed7;
+  border: 1px solid #1a73e8;
+}
+
+.copiar:hover {
+  background: #dbeafe;
+}
+
+.info {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 18px;
+}
+
+.card {
+  text-align: left;
+}
+
+.card > h3 {
+  margin-top: 0;
+  color: #1e293b;
+  font-size: 22px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.box {
+  position: relative;
+  background: linear-gradient(135deg, #f8fbff, #ffffff);
+  padding: 22px 22px 22px 82px;
+  margin-top: 16px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 22px rgba(15, 35, 75, 0.06);
+}
+
+.box::before {
+  position: absolute;
+  left: 22px;
+  top: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #e8f0fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.box.computador::before {
+  content: "💻";
+}
+
+.box.celular::before {
+  content: "📱";
+}
+
+.box.classroom::before {
+  content: "🎓";
+}
+
+.box h3 {
+  margin: 0 0 8px;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+.box a {
+  text-decoration: none;
+}
+
+.box button {
+  margin-top: 10px;
+  background: #ffffff;
+  color: #0b5ed7;
+  border: 1px solid #1a73e8;
+}
+
+.box button:hover {
+  background: #eef6ff;
+}
+
+.alerta {
+  background: #fff7db;
+  border-left: 5px solid #fbbc04;
+  padding: 14px 16px;
+  margin-top: 18px;
+  font-size: 13px;
+  border-radius: 12px;
+  color: #4b5563;
+  text-align: left;
+}
+
+.contato {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="caixa">
+
+    <div class="icone-email">📧</div>
+
+    <h2>Consulte seu e-mail institucional</h2>
+
+    <div class="subtitulo">
+      Modalidade Semipresencial
+    </div>
+
+    <div class="campo-busca">
+      <span>🔎</span>
+      <input
+        id="busca"
+        placeholder="Digite seu nome completo ou matrícula"
+        onkeydown="handleEnter(event)">
+    </div>
+
+    <button id="btn" onclick="consultar()">Consultar</button>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Pesquisando...</div>
+    </div>
+
+    <div id="retorno"></div>
+
+    <div class="info">
+      ⏳ Alunos recém-matriculados devem aguardar a liberação do e-mail.
+    </div>
+
+    <div class="alerta">
+      <b>Importante:</b><br>
+      Caso não encontre, tente digitar sem acentos ou utilize a matrícula.
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="card">
+  <h3>🎓 Acesse o Google Sala de Aula</h3>
+
+  <p>
+    Após consultar seu e-mail institucional, acesse o Google Sala de Aula pelo link abaixo
+    e faça login usando o <b>e-mail informado na consulta</b>.
+  </p>
+
+  <div class="box classroom">
+    <h3>Acesso direto ao Google Sala de Aula</h3>
+    <p>Clique no botão abaixo para entrar diretamente no Classroom:</p>
+
+    <a href="https://classroom.google.com" target="_blank">
+      <button>🚀 Acessar Google Sala de Aula</button>
+    </a>
+  </div>
+
+  <div class="box computador">
+    <h3>Acesso pelo Computador</h3>
+    <p>Aprenda como entrar no Google Sala de Aula utilizando notebook ou computador:</p>
+
+    <a href="https://drive.google.com/file/d/1C1Gi6L8xB6NpAk1MniViTGx2w_5npl6U/view?usp=drive_link" target="_blank">
+      <button>▶️ Assistir tutorial no computador</button>
+    </a>
+  </div>
+
+  <div class="box celular">
+    <h3>Acesso pelo Celular (Android e iOS)</h3>
+    <p>Veja como acessar o Google Sala de Aula pelo seu celular:</p>
+
+    <a href="https://drive.google.com/file/d/1neYusD5PGZJX03I6_sOutcZrgISVScFg/view?usp=drive_link" target="_blank">
+      <button>▶️ Assistir tutorial no celular</button>
+    </a>
+  </div>
+
+  <div class="alerta">
+    <b>Dica importante:</b><br>
+    Para acessar suas aulas, entre no Google Sala de Aula usando o
+    <b>e-mail institucional informado na consulta</b>.
+  </div>
+
+  <div class="contato">
+    <b>Suporte:</b><br>
+    suporte.acesso@unifaveni.com.br<br>
+    WhatsApp: 27 99816-7072
+  </div>
+</div>
+
+</div>
+
+<script>
+function normalizar(texto){
+  return texto.normalize("NFD")
+  .replace(/[\u0300-\u036f]/g,"")
+  .toLowerCase()
+  .trim();
+}
+
+function getLogoInstituicao(instituicao) {
+  const logos = {
+    "UNISBA": "https://raw.githubusercontent.com/suportemarcos-rgb/logos-email-aluno/main/images-Photoroom.png",
+    "UNIABEU": "https://raw.githubusercontent.com/suportemarcos-rgb/logos-email-aluno/main/UNIABEU-Photoroom.png",
+    "UNIFAVENI": "https://raw.githubusercontent.com/suportemarcos-rgb/logos-email-aluno/main/CENTRO-UNIVERSIT%C3%81RIO-FAVEN%20HORIZONTAL.png"
+  };
+
+  return logos[instituicao] || "";
+}
+
+function handleEnter(e){
+  if(e.key==="Enter" && !document.getElementById("btn").disabled){
+    consultar();
+  }
+}
+
+let ultimaConsulta = 0;
+
+async function consultar(){
+
+  const agora = Date.now();
+  if(agora - ultimaConsulta < 1500) return;
+  ultimaConsulta = agora;
+
+  const q = document.getElementById("busca").value.trim();
+  const r = document.getElementById("retorno");
+  const l = document.getElementById("loading");
+  const b = document.getElementById("btn");
+
+  if(!q){
+    r.innerHTML = `<div class="badge erro">⚠️ Atenção</div>
+    <div class="resultado">Digite seu nome completo.</div>`;
+    return;
+  }
+
+  if(!/^\d+$/.test(q) && q.split(" ").length < 2){
+    r.innerHTML = `<div class="badge erro">⚠️ Nome incompleto</div>
+    <div class="resultado">Digite seu <b>nome completo</b>.</div>`;
+    return;
+  }
+
+  b.disabled = true;
+  l.style.display = "block";
+  r.innerHTML = "";
+
+  try{
+
+    const dados = await fetch("https://script.google.com/macros/s/AKfycbxjZc4ZAbMdHEf38zuprYlcnzwDQsWiSf64DHX48RPtqGB7ShiHncpGZurRSisZXShbvg/exec?q="+encodeURIComponent(q));
+    let res = await dados.json();
+
+    if(res && !Array.isArray(res)) res = [res];
+
+    if(Array.isArray(res) && res.length > 0){
+
+      if(/^\d+$/.test(q)){
+        mostrarResultados(res);
+      }else{
+        const buscaNormalizada = normalizar(q);
+        const iguais = res.filter(aluno =>
+          normalizar(aluno.nome) === buscaNormalizada
+        );
+
+        if(iguais.length > 0){
+          mostrarResultados(iguais);
+        }else{
+          r.innerHTML = `<div class="badge erro">⚠️ Múltiplos resultados</div>
+          <div class="resultado">
+          Foram encontrados nomes parecidos.<br><br>
+          Digite o <b>nome completo exatamente como está na matrícula</b>.
+          </div>`;
+        }
+      }
+
+    }else{
+      r.innerHTML = `
+      <div class="badge erro">❌ Não encontrado</div>
+      <div class="resultado">
+      Nenhum aluno localizado.<br><br>
+      ⚠️ <b>Verifique se você digitou seu NOME COMPLETO exatamente como está na matrícula.</b><br>
+      Abreviações, apelidos ou apenas o primeiro nome não funcionam.
+      </div>`;
+    }
+
+  }catch{
+    r.innerHTML = `<div class="badge erro">🚫 Erro</div>
+    <div class="resultado">Falha na consulta.</div>`;
+  }
+
+  l.style.display="none";
+  b.disabled=false;
+}
+
+function mostrarResultados(lista){
+
+  let html = `<div class="badge ok">✅ ${lista.length} vínculo(s) encontrado(s)</div>`;
+
+  lista.forEach((aluno,index)=>{
+
+    const logo = getLogoInstituicao(aluno.instituicao);
+
+    html += `
+    <div class="resultado">
+
+      ${logo ? `
+      <div class="logo-instituicao">
+        <img src="${logo}" alt="Logo">
+      </div>
+      ` : ""}
+
+      <div class="linha">👤 <b>Nome:</b> ${aluno.nome}</div>
+      <div class="linha">🆔 <b>Matrícula:</b> ${aluno.matricula}</div>
+      <div class="linha">📧 <b>E-mail:</b> <span id="email${index}">${aluno.email}</span></div>
+      <div class="linha">🔑 <b>Senha de primeiro acesso:</b> ${aluno.senha ?? "Não cadastrada"}</div>
+      <div class="linha">🎓 <b>Curso:</b> ${aluno.curso}</div>
+      <button class="copiar" onclick="copiarEmail('email${index}', this)">📋 Copiar e-mail</button>
+    </div>
+    `;
+  });
+
+  document.getElementById("retorno").innerHTML = html;
+}
+
+function copiarEmail(id, botao){
+
+  const email = document.getElementById(id).innerText;
+  const temp = document.createElement("textarea");
+
+  temp.value = email;
+  document.body.appendChild(temp);
+  temp.select();
+  document.execCommand("copy");
+  document.body.removeChild(temp);
+
+  botao.innerText = "✅ Copiado!";
+  botao.style.background = "#e6f4ea";
+  botao.style.color = "#137333";
+  botao.style.border = "1px solid #137333";
+
+  setTimeout(()=>{
+    botao.innerText = "📋 Copiar e-mail";
+    botao.style.background = "";
+    botao.style.color = "";
+    botao.style.border = "";
+  },2000);
+}
+</script>
+
+</body>
+</html>
